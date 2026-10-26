@@ -1,6 +1,6 @@
 (lang dune 3.24)
 
-(name cpio)
+(name cpio-svr4)
 
 (generate_opam_files true)
 
@@ -16,7 +16,7 @@
 (documentation https://url/to/documentation)
 
 (package
- (name cpio)
+ (name cpio-svr4)
  (synopsis "A short synopsis")
  (description "A longer description")
  (depends ocaml)

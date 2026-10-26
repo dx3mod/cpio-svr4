@@ -1,2 +1,4 @@
 (library
- (public_name cpio))
+ (public_name cpio-svr4)
+ (name cpio_svr4)
+ (libraries bytream hexen))
