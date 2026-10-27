@@ -1,0 +1,3 @@
+(executables
+ (names print_filenames)
+ (libraries cpio-svr4))
