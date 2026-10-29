@@ -1,26 +1,26 @@
-(lang dune 3.24)
+(lang dune 3.22)
 
 (name cpio-svr4)
 
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github dx3mod/cpio-svr4))
 
-(authors "Author Name <author@example.com>")
+(authors "Mikhail Lopatin <dx3mod@bk.ru>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Mikhail Lopatin <dx3mod@bk.ru>")
 
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license MIT)
 
 (package
  (name cpio-svr4)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml)
+ (synopsis "A library for reading and writing CPIO (SVR4) archives")
+ (depends
+  ocaml
+  (bytream
+   (>= 0.4))
+  (hexen
+   (>= 0.2)))
  (tags
-  ("add topics" "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+  (archive cpio streaming)))
