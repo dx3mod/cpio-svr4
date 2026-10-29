@@ -21,7 +21,7 @@ and kind =
 
 and metadata = {
   owner : owner;
-  permission : int32;
+  permission : int;
   modification_time : int32;
   device : device;
   special_device : device option;
@@ -30,7 +30,7 @@ and metadata = {
 
 and owner = { user_id : int; group_id : int }
 and device = { major : int; minor : int }
-and index_node = { inode : int32; link_count : int }
+and index_node = { inode : int32; hard_link_count : int }
 
 let[@inline] is_trailer { path; _ } = path = "TRAILER!!!"
 
@@ -55,3 +55,20 @@ let verify_bigstring_content { content; checksum; _ } =
           0l content
       in
       checksum = expected_checksum
+
+let trailer =
+  {
+    path = "TRAILER!!!";
+    kind = `Regular;
+    content = ();
+    checksum = None;
+    metadata =
+      {
+        owner = { user_id = 0; group_id = 0 };
+        permission = 0;
+        modification_time = 0l;
+        device = { major = 0; minor = 0 };
+        special_device = None;
+        inode = { inode = 0l; hard_link_count = 0 };
+      };
+  }

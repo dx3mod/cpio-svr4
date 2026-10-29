@@ -28,18 +28,18 @@ end
 (**********************************************************************************)
 
 let[@inline] kind_of_mode mode =
-  match Int32.logand mode 0o170000l with
-  | 0o140000l -> `Socket
-  | 0o120000l -> `Symlink
-  | 0o100000l -> `Regular
-  | 0o060000l -> `Block_device
-  | 0o040000l -> `Directory
-  | 0o020000l -> `Character_device
-  | 0o010000l -> `Fifo
+  match mode land 0o170000 with
+  | 0o140000 -> `Socket
+  | 0o120000 -> `Symlink
+  | 0o100000 -> `Regular
+  | 0o060000 -> `Block_device
+  | 0o040000 -> `Directory
+  | 0o020000 -> `Character_device
+  | 0o010000 -> `Fifo
   | typ ->
-      invalid_arg @@ Printf.sprintf "illegal cpio file entry type 0o%06lo" typ
+      invalid_arg @@ Printf.sprintf "illegal cpio file entry type 0o%06o" typ
 
-let[@inline] permission_of_mode mode = Int32.logand mode 0o7777l
+let[@inline] permission_of_mode mode = mode land 0o7777
 
 (**********************************************************************************)
 
@@ -74,7 +74,7 @@ let read_entry_with reader f =
   Hexen.decode_into (Bytes.unsafe_to_string hex_buf) 0 decoded_hex_buf 0 104;
 
   let inode = Bytes.get_int32_be decoded_hex_buf 0
-  and mode = Bytes.get_int32_be decoded_hex_buf 4
+  and mode = Bytes.get_int_be decoded_hex_buf 4
   and user_id = Bytes.get_int_be decoded_hex_buf 8
   and group_id = Bytes.get_int_be decoded_hex_buf 12
   and nlink = Bytes.get_int_be decoded_hex_buf 16
@@ -114,7 +114,7 @@ let read_entry_with reader f =
             modification_time = mtime;
             device = { major = dmajor; minor = dminor };
             special_device;
-            inode = { inode; link_count = nlink };
+            inode = { inode; hard_link_count = nlink };
           };
       }
   in

@@ -1,13 +1,13 @@
 # cpio-srv4
 
-A pure OCaml library for reading and writing [CPIO] (SVR4) archives.
+A library for reading and writing [CPIO] (SVR4) archives, written in pure OCaml.
 
-**Features**
+Features:
 
-- Complete CPIO (SVR4) support, with checksum verification and all entry types;
+- Complete CPIO (SVR4) support, including checksum verification and all entry types;
 - Type-safe file entry representation;
-- Streaming reading and writing via [Bytream] (i.e. no full buffering);
-- Low, predictable memory allocations: bounded by bytes read, not by declared sizes;
+- Streaming reading and writing via [Bytream] (i.e., no full buffering required);
+- Low, predictable memory allocations: bounded by actual bytes read, not by declared sizes.
 
 ## Quick start
 
@@ -15,9 +15,9 @@ You can install `cpio-svr4` using the [OPAM] package manager or another method. 
 
 ## In use
 
-The `cpio-svr4` library uses the Bytream library for I/O abstraction and efficient streaming reading and writing of CPIO archives. You may use this via the provided `Reader` and `Writer` modules, and other top-level defined functions.
+The `cpio-svr4` library uses the [Bytream] library for I/O abstraction, enabling efficient streaming read and write operations for CPIO archives. You can use these features via the provided `Reader` and `Writer` modules, as well as other top-level functions.
 
-For example, reading a CPIO archive from an input channel and printing the filenames using top-level functions.
+For example, you can read a CPIO archive from an input channel and print the filenames using top-level functions:
 
 ```ocaml
 let print_filenames ic =
@@ -25,9 +25,9 @@ let print_filenames ic =
   |> List.iter @@ fun Cpio_svr4.File_entry.{ path; _ } -> print_endline path
 ```
 
-It's not the most effective code, but it's simple and good for one-off programs.
+It's not the most effective code, but it's simple and good for one-off scripts or small programs.
 
-But if you want to make it more effective, you should use the `Reader` module and Bytream's streams directly.
+For better performance and memory efficiency, especially when handling large archives or streaming data, use the `Reader` module directly with Bytream streams. This approach avoids loading the entire list of entries into memory at once.
 
 ```ocaml
 let in_stream = Bytream.In.of_channel ic in
@@ -38,6 +38,12 @@ Cpio_svr4.Reader.iter_with
   reader
 ```
 
+You can also write archives using the `Writer` module and other top-level functions.
+
+```ocaml
+Cpio_svr4.write [Cpio_svr4.File_entry.regular ~perm:0o644 "README.md" "Don't read me please!"]
+```
+
 ## References
 
 - [cpio(5) man page](https://manpages.ubuntu.com/manpages/jammy/man5/cpio.5.html)
@@ -45,12 +51,12 @@ Cpio_svr4.Reader.iter_with
 
 **Related works**
 
-- [ocaml-cpio](https://tangled.org/gazagnaire.org/ocaml-cpio), a CPIO archive reader and writer written in pure OCaml by [Thomas Gazagnaire](https://tangled.org/gazagnaire.org). In comparison with this library, `ocaml-cpio` uses the [Bytesrw] library for I/O abstractions and has terrible memory utilization, which increases the GC workload.
+- [ocaml-cpio](https://tangled.org/gazagnaire.org/ocaml-cpio): a CPIO archive reader and writer written in pure OCaml by [Thomas Gazagnaire](https://tangled.org/gazagnaire.org). In contrast to this library, `ocaml-cpio` uses the [Bytesrw] library for I/O abstractions and has higher memory usage, which increases GC pressure.
 
 ## License
 
-The project is licensed under [the MIT License](./LICENSE), which allows for all permissions.
-Just use it and enjoy yourself without fear. We are always open to pull requests!
+The project is licensed under [the MIT License](./LICENSE).
+Feel free to use it without fear. We are always open to pull requests!
 
 [Bytream]: https://github.com/dx3mod/bytream
 [CPIO]: https://en.wikipedia.org/wiki/Cpio
