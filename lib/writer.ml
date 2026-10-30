@@ -1,6 +1,14 @@
 module Out = Bytream.Out
 open Private
 
+module Error = struct
+  type t = Invalid_content_length
+
+  exception Error of t * string
+end
+
+let[@inline] raise_error kind msg = raise Error.(Error (kind, msg))
+
 type t = { out_stream : Out.t; header_buf : bytes; hex_buf : bytes }
 
 let make out_stream =
@@ -12,8 +20,9 @@ let output_version out_stream file_entry =
   | Some _ -> Out.output_string out_stream "070702"
 
 let output_padding out_stream n =
-  let zeros = String.make n '\000' in
-  Out.output_string out_stream zeros
+  for i = 1 to n do
+    Out.output_byte out_stream 0
+  done
 
 let write_entry_with ~content_length writer file_entry f =
   let { out_stream; header_buf; hex_buf } = writer in
@@ -56,7 +65,17 @@ let write_entry_with ~content_length writer file_entry f =
   Out.output_byte out_stream 0;
 
   output_padding out_stream (calculate_padding (110 + path_len));
+
+  let bytes_written_snapshot = Out.bytes_written out_stream in
   f out_stream;
+
+  let current_bytes_written = Out.bytes_written out_stream in
+  if current_bytes_written - bytes_written_snapshot <> content_length then
+    raise_error Invalid_content_length
+      (Printf.sprintf "expected %d bytes to be written, but %d were written"
+         content_length
+         (current_bytes_written - bytes_written_snapshot));
+
   output_padding out_stream (calculate_padding content_length)
 
 let write_entry writer (file_entry : File_entry.with_string_content) =

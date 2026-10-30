@@ -1,4 +1,4 @@
-(** CPIO (SVR4) archive reader.
+(** Incremental, buffered and unbuffered CPIO (SVR4) archive reader.
 
     A reader can consume one or more archives sequentially from an incoming byte
     stream. *)

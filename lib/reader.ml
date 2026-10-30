@@ -42,7 +42,7 @@ let[@inline] input_path_string in_stream length =
 
   path
 
-let read_header { in_stream; decoded_hex_buf; hex_buf } =
+let read_entry_with { in_stream; decoded_hex_buf; hex_buf } f =
   let version = input_version in_stream in
 
   In.really_input_bytes in_stream hex_buf 0 104;
@@ -102,12 +102,6 @@ let read_header { in_stream; decoded_hex_buf; hex_buf } =
           };
       }
   in
-
-  (file_entry, content_length)
-
-let read_entry_with reader f =
-  let { in_stream; _ } = reader in
-  let file_entry, content_length = read_header reader in
 
   (* The "070701"/"070702" magic plus 13 hex fields is exactly 110 bytes.
      Alignment is relative to the start of the archive, so [make] requires a

@@ -17,4 +17,7 @@ let to_buffer buffer entries =
   Bytream.Out.to_buffer buffer (Fun.flip write entries)
 
 let to_string entries = Bytream.Out.to_string (Fun.flip write entries)
-let to_channel oc entries = Bytream.Out.of_channel oc |> Fun.flip write entries
+
+let to_channel oc entries =
+  let out_stream = Bytream.Out.of_channel oc in
+  Bytream.Out.with_flush out_stream (fun _ -> write out_stream entries)
