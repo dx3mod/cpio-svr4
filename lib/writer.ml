@@ -1,30 +1,5 @@
 module Out = Bytream.Out
-
-(**********************************************************************************)
-
-(** [calculate_padding n] calculates 32-bit alignment padding after [n] bytes.
-*)
-let[@inline] calculate_padding n_bytes = (4 - (n_bytes mod 4)) mod 4
-
-let[@inline] int32_of_kind kind =
-  match kind with
-  | `Socket -> 0o140000l
-  | `Symlink -> 0o120000l
-  | `Regular -> 0o100000l
-  | `Block_device -> 0o060000l
-  | `Directory -> 0o040000l
-  | `Character_device -> 0o020000l
-  | `Fifo -> 0o010000l
-
-let[@inline] int32_of_permission perm = Int32.logand (Int32.of_int perm) 0o7777l
-
-module Bytes = struct
-  include Bytes
-
-  let[@inline] set_int_be buf off x = set_int32_be buf off (Int32.of_int x)
-end
-
-(**********************************************************************************)
+open Private
 
 type t = { out_stream : Out.t; header_buf : bytes; hex_buf : bytes }
 
