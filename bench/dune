@@ -1,3 +1,4 @@
 (executables
- (names bench_file_read bench_buffer_read bench_filenames)
+ (names bench_file_read bench_buffer_read bench_filenames bench_file_write)
+ (optional)
  (libraries cpio-svr4 benchmark))
